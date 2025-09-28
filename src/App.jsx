@@ -6,7 +6,7 @@ import GoalThermometer from './components/GoalThermometer';
 import CountdownTimer from './components/CountdownTimer';
 import SharePledge from './components/SharePledge';
 
-const API_URL = 'http://localhost:5002/api';
+const API_URL = 'https://pledge-to-vote-2026-backend.onrender.com/api';
 
 const determineCurrentGoal = (pledges) => {
   if (pledges < 500) return 500;
