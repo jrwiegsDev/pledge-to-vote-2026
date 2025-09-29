@@ -235,3 +235,16 @@ body {
 .share-button.facebook {
     background-color: #1877F2;
 }
+
+/* --- Custom Map Tooltip --- */
+.map-tooltip {
+    background: #20232a;
+    color: #f0f0f0;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    border: 1px solid #61dafb;
+    pointer-events: none;
+    /* Allows mouse events to pass through to the map */
+    white-space: nowrap;
+    z-index: 999;
+}

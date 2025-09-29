@@ -21,16 +21,17 @@ function App() {
   const [selectedState, setSelectedState] = useState('');
   const [zipCode, setZipCode] = useState('');
   const [pledgeSuccess, setPledgeSuccess] = useState(false);
+  // NEW STATE: We'll use this to remember the state after the form is cleared.
+  const [lastPledgedState, setLastPledgedState] = useState('');
 
   const currentGoal = determineCurrentGoal(totalPledges);
 
-  // THIS IS THE HOOK THAT WAS MISSING. It runs once on load to get the latest data.
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
         const [countResponse, stateResponse] = await Promise.all([
           fetch(`${API_URL}/pledges/count`),
-          fetch(`${API_URL}/pledges/by-state`)
+          fetch(`${API_URL}/pledges/by-state`),
         ]);
         const countData = await countResponse.json();
         const statePledges = await stateResponse.json();
@@ -61,6 +62,10 @@ function App() {
       setStateData(statePledges);
       setPledgeSuccess(true);
       
+      // NEW LOGIC: Before clearing the form, save the pledged state.
+      setLastPledgedState(selectedState);
+      
+      // Now we clear the form for the next user.
       setSelectedState('');
       setZipCode('');
     } catch (error) {
@@ -83,9 +88,10 @@ function App() {
         <section className="pledge-section">
           <h2>Total Pledges: {totalPledges.toLocaleString()}</h2>
           {pledgeSuccess ? (
-            <SharePledge />
+            // UPDATED COMPONENT: Pass the last pledged state as a prop.
+            <SharePledge pledgedState={lastPledgedState} />
           ) : (
-            <PledgeForm 
+            <PledgeForm
               selectedState={selectedState}
               onStateChange={(e) => setSelectedState(e.target.value)}
               zipCode={zipCode}
