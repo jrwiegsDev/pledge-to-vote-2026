@@ -5,6 +5,8 @@ import USMap from './components/USMap';
 import GoalThermometer from './components/GoalThermometer';
 import CountdownTimer from './components/CountdownTimer';
 import SharePledge from './components/SharePledge';
+// --- 1. IMPORT THE NEW COMPONENT ---
+import LiveUserCount from './components/LiveUserCount';
 
 const API_URL = 'https://pledge-to-vote-2026-backend.onrender.com/api';
 
@@ -21,7 +23,6 @@ function App() {
   const [selectedState, setSelectedState] = useState('');
   const [zipCode, setZipCode] = useState('');
   const [pledgeSuccess, setPledgeSuccess] = useState(false);
-  // NEW STATE: We'll use this to remember the state after the form is cleared.
   const [lastPledgedState, setLastPledgedState] = useState('');
 
   const currentGoal = determineCurrentGoal(totalPledges);
@@ -44,9 +45,10 @@ function App() {
     fetchInitialData();
   }, []);
 
-  const handleSubmit = async (event) => {
+const handleSubmit = async (event) => {
     event.preventDefault();
     try {
+      // 1. You submit the new pledge
       const postResponse = await fetch(`${API_URL}/pledges`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -55,17 +57,17 @@ function App() {
       if (!postResponse.ok) throw new Error('Pledge submission failed');
       const postData = await postResponse.json();
       
+      // 2. THE FIX: Immediately re-fetch the data for the map
       const stateResponse = await fetch(`${API_URL}/pledges/by-state`);
       const statePledges = await stateResponse.json();
       
+      // 3. Update BOTH state variables to trigger a full re-render
       setTotalPledges(postData.totalPledges);
-      setStateData(statePledges);
-      setPledgeSuccess(true);
+      setStateData(statePledges); // This line updates the map
       
-      // NEW LOGIC: Before clearing the form, save the pledged state.
+      setPledgeSuccess(true);
       setLastPledgedState(selectedState);
       
-      // Now we clear the form for the next user.
       setSelectedState('');
       setZipCode('');
     } catch (error) {
@@ -76,9 +78,12 @@ function App() {
   
   return (
     <div className="app-container">
+      {/* --- 2. RENDER THE NEW COMPONENT --- */}
+      <LiveUserCount />
+      
       <header className="app-header">
         <h1>Take the Pledge to Vote in the 2026 Midterms</h1>
-        <p>Make your voice heard! Join thousands of others by pledging to vote in the 2026 Midterm Elections!</p>
+        <p>Make your voice heard! Join others across the country by pledging to vote in the 2026 Midterm Elections!</p>
         <CountdownTimer />
       </header>
 
@@ -88,7 +93,6 @@ function App() {
         <section className="pledge-section">
           <h2>Total Pledges: {totalPledges.toLocaleString()}</h2>
           {pledgeSuccess ? (
-            // UPDATED COMPONENT: Pass the last pledged state as a prop.
             <SharePledge pledgedState={lastPledgedState} />
           ) : (
             <PledgeForm

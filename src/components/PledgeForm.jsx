@@ -1,31 +1,63 @@
 import React, { useState, useEffect } from 'react';
 
-const PledgeForm = ({ selectedState, onStateChange, zipCode, onZipChange, handleSubmit }) => {
-  // New state to hold our validation error message
-  const [validationError, setValidationError] = useState('');
-  const statesAndTerritories = [
-    "Alabama", "Alaska", "American Samoa", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "District of Columbia", "Florida", "Georgia", "Guam", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Northern Mariana Islands", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Puerto Rico", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "U.S. Virgin Islands", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"
-  ];
+// NEW: A more structured list of states with names and abbreviations
+const states = [
+  { name: 'Alabama', abbr: 'AL' }, { name: 'Alaska', abbr: 'AK' },
+  { name: 'Arizona', abbr: 'AZ' }, { name: 'Arkansas', abbr: 'AR' },
+  { name: 'California', abbr: 'CA' }, { name: 'Colorado', abbr: 'CO' },
+  { name: 'Connecticut', abbr: 'CT' }, { name: 'Delaware', abbr: 'DE' },
+  { name: 'District of Columbia', abbr: 'DC' }, { name: 'Florida', abbr: 'FL' },
+  { name: 'Georgia', abbr: 'GA' }, { name: 'Hawaii', abbr: 'HI' },
+  { name: 'Idaho', abbr: 'ID' }, { name: 'Illinois', abbr: 'IL' },
+  { name: 'Indiana', abbr: 'IN' }, { name: 'Iowa', abbr: 'IA' },
+  { name: 'Kansas', abbr: 'KS' }, { name: 'Kentucky', abbr: 'KY' },
+  { name: 'Louisiana', abbr: 'LA' }, { name: 'Maine', abbr: 'ME' },
+  { name: 'Maryland', abbr: 'MD' }, { name: 'Massachusetts', abbr: 'MA' },
+  { name: 'Michigan', abbr: 'MI' }, { name: 'Minnesota', abbr: 'MN' },
+  { name: 'Mississippi', abbr: 'MS' }, { name: 'Missouri', abbr: 'MO' },
+  { name: 'Montana', abbr: 'MT' }, { name: 'Nebraska', abbr: 'NE' },
+  { name: 'Nevada', abbr: 'NV' }, { name: 'New Hampshire', abbr: 'NH' },
+  { name: 'New Jersey', abbr: 'NJ' }, { name: 'New Mexico', abbr: 'NM' },
+  { name: 'New York', abbr: 'NY' }, { name: 'North Carolina', abbr: 'NC' },
+  { name: 'North Dakota', abbr: 'ND' }, { name: 'Ohio', abbr: 'OH' },
+  { name: 'Oklahoma', abbr: 'OK' }, { name: 'Oregon', abbr: 'OR' },
+  { name: 'Pennsylvania', abbr: 'PA' }, { name: 'Rhode Island', abbr: 'RI' },
+  { name: 'South Carolina', abbr: 'SC' }, { name: 'South Dakota', abbr: 'SD' },
+  { name: 'Tennessee', abbr: 'TN' }, { name: 'Texas', abbr: 'TX' },
+  { name: 'Utah', abbr: 'UT' }, { name: 'Vermont', abbr: 'VT' },
+  { name: 'Virginia', abbr: 'VA' }, { name: 'Washington', abbr: 'WA' },
+  { name: 'West Virginia', abbr: 'WV' }, { name: 'Wisconsin', abbr: 'WI' },
+  { name: 'Wyoming', abbr: 'WY' }
+];
 
-  // This effect will run whenever the user changes the zip code or state
+
+const PledgeForm = ({ selectedState, onStateChange, zipCode, onZipChange, handleSubmit }) => {
+  const [validationError, setValidationError] = useState('');
+
   useEffect(() => {
-    // We only want to validate when we have a full 5-digit zip code and a selected state
     if (zipCode.length === 5 && selectedState) {
       const validateZip = async () => {
         try {
+          // Find the full name of the state from our new list based on the abbreviation
+          const selectedStateFullName = states.find(s => s.abbr === selectedState)?.name;
+          if (!selectedStateFullName) {
+            setValidationError(''); // No state selected to validate against
+            return;
+          }
+
           const response = await fetch(`https://api.zippopotam.us/us/${zipCode}`);
-          if (!response.ok) { // The API returns an error for invalid zip codes
+          if (!response.ok) {
             setValidationError('Invalid Zip Code.');
             return;
           }
           const data = await response.json();
           const apiState = data.places[0]['state'];
 
-          // Compare the state from the API with the state selected in the dropdown
-          if (apiState !== selectedState) {
+          // Compare the API state with the full name we found
+          if (apiState !== selectedStateFullName) {
             setValidationError('State and Zip Code do not match!');
           } else {
-            setValidationError(''); // If they match, clear the error
+            setValidationError('');
           }
         } catch (error) {
           console.error("Zip code validation error:", error);
@@ -33,14 +65,10 @@ const PledgeForm = ({ selectedState, onStateChange, zipCode, onZipChange, handle
         }
       };
       
-      // Use a timer to prevent calling the API on every single keystroke
-      const timerId = setTimeout(() => {
-        validateZip();
-      }, 500); // Wait 500ms after the user stops typing
-
-      return () => clearTimeout(timerId); // Clean up the timer
+      const timerId = setTimeout(() => validateZip(), 500);
+      return () => clearTimeout(timerId);
     } else {
-      setValidationError(''); // Clear any errors if the zip isn't 5 digits long
+      setValidationError('');
     }
   }, [zipCode, selectedState]);
 
@@ -48,10 +76,16 @@ const PledgeForm = ({ selectedState, onStateChange, zipCode, onZipChange, handle
   return (
     <form onSubmit={handleSubmit} className="pledge-form">
       <div className="form-group">
-        <label htmlFor="state-select">Select Your State / Territory</label>
+        <label htmlFor="state-select">Select Your State</label>
+        {/* The `value` is now the abbreviation (e.g., "IL") */}
         <select id="state-select" value={selectedState} onChange={onStateChange} required>
           <option value="" disabled>-- Please choose an option --</option>
-          {statesAndTerritories.map(name => <option key={name} value={name}>{name}</option>)}
+          {/* UPDATED: We map over the new `states` array */}
+          {states.map(state => (
+            <option key={state.abbr} value={state.abbr}>
+              {state.name}
+            </option>
+          ))}
         </select>
       </div>
       <div className="form-group">
@@ -66,13 +100,12 @@ const PledgeForm = ({ selectedState, onStateChange, zipCode, onZipChange, handle
           title="Please enter a 5-digit zip code."
           required 
         />
-        {/* If a validation error exists, display it here */}
         {validationError && <p className="validation-error">{validationError}</p>}
       </div>
       <button 
         type="submit" 
         className="pledge-button" 
-        disabled={!!validationError || !selectedState || zipCode.length !== 5} // Disable button if there's an error or form is incomplete
+        disabled={!!validationError || !selectedState || zipCode.length !== 5}
       >
         Make the Pledge!
       </button>

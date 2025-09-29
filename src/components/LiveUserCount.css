@@ -1,0 +1,37 @@
+.live-user-count {
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    background-color: rgba(0, 0, 0, 0.3);
+    color: #f0f0f0;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+}
+
+.live-dot {
+    width: 10px;
+    height: 10px;
+    background-color: #32CD32;
+    /* Lime Green */
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(50, 205, 50, 0.7);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(50, 205, 50, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(50, 205, 50, 0);
+    }
+}
