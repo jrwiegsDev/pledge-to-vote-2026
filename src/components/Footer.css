@@ -1,0 +1,30 @@
+/* src/components/Footer.css */
+
+.site-footer {
+  text-align: center;
+  padding: 2rem 1rem;
+  margin-top: 4rem;
+  border-top: 1px solid var(--accent-blue);
+  color: var(--text-light);
+}
+
+.site-footer p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.site-footer nav {
+  margin-top: 0.5rem;
+}
+
+.site-footer a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s;
+}
+
+.site-footer a:hover {
+  color: #dcdcdc;
+  text-decoration: underline;
+}

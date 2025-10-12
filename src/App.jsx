@@ -5,8 +5,8 @@ import USMap from './components/USMap';
 import GoalThermometer from './components/GoalThermometer';
 import CountdownTimer from './components/CountdownTimer';
 import SharePledge from './components/SharePledge';
-// --- 1. IMPORT THE NEW COMPONENT ---
 import LiveUserCount from './components/LiveUserCount';
+import Footer from './components/Footer';
 
 const API_URL = 'https://pledge-to-vote-2026-backend.onrender.com/api';
 
@@ -110,6 +110,7 @@ const handleSubmit = async (event) => {
           <USMap stateData={stateData} />
         </section>
       </main>
+      <Footer />
     </div>
   );
 }
