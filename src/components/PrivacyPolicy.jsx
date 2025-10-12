@@ -33,6 +33,9 @@ const PrivacyPolicy = () => {
       <h3>Automatically Collected Information:</h3>
       <p>Like almost every website on the internet, the hosting service for this site (Render) may automatically collect standard web server logs. This can include your IP address and browser type. This information is used for general traffic analysis and security monitoring. I do not use this data to identify individual users.</p>
       
+      <h2>Live User Count</h2>
+      <p>To create a sense of a live community, this site includes a counter that displays the number of users currently visiting the page in real-time. This feature works by maintaining a simple, anonymous tally of active connections on the server. It does not track, store, or share any personal information about individual visitors.</p>
+
       <h2>Data Security & Sharing</h2>
       <p>The limited, anonymous data collected is stored in a secure, cloud-hosted database (MongoDB Atlas). The site uses HTTPS (SSL) to encrypt the connection between your browser and the server.</p>
       <p><strong>I do not sell, trade, or otherwise transfer your information to outside parties because I do not collect any personally identifiable information to begin with.</strong></p>
