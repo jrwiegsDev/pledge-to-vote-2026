@@ -8,7 +8,7 @@ const PrivacyPolicy = () => {
   return (
     <div className="policy-container">
       <h1>Privacy Policy & Terms of Service</h1>
-      <p><strong>Last Updated: October 12, 2025</strong></p>
+      <p><strong>Last Updated: October 31, 2025</strong></p>
       
       <p>Hello! My name is Joe, and I built this website, PledgeToVote2026.com, as a personal project to practice my full-stack development skills and to encourage civic engagement for the 2026 U.S. Midterm Elections. Your privacy is important, and this policy explains what information is collected and how it's used.</p>
       <p>This policy applies only to pledgetovote2026.com.</p>
@@ -35,6 +35,15 @@ const PrivacyPolicy = () => {
       
       <h2>Live User Count</h2>
       <p>To create a sense of a live community, this site includes a counter that displays the number of users currently visiting the page in real-time. This feature works by maintaining a simple, anonymous tally of active connections on the server. It does not track, store, or share any personal information about individual visitors.</p>
+
+      <h2>Pledge Counter & Simulated Data</h2>
+      <p>The pledge counter displayed on this site may include simulated or test data in addition to actual user submissions. This is a personal development project, and as I continue to build, test, and improve the application, I generate sample pledges for the following purposes:</p>
+      <ul>
+        <li><strong>Testing and Debugging:</strong> To ensure the site functions correctly (such as fixing backend database connections or testing new features), I periodically add seed data to the database.</li>
+        <li><strong>Development and Improvement:</strong> Sample pledges help me validate the interactive map, user interface, and data visualization components as I refine the project.</li>
+        <li><strong>Encouraging Engagement:</strong> Simulated data may also be used to demonstrate activity and motivate civic participation.</li>
+      </ul>
+      <p>This site is an educational project created to practice full-stack development skills while promoting voter engagement. The pledge count is not intended to represent a verified, official tally of committed voters, but rather a demonstration of community interest and technical capability.</p>
 
       <h2>Data Security & Sharing</h2>
       <p>The limited, anonymous data collected is stored in a secure, cloud-hosted database (MongoDB Atlas). The site uses HTTPS (SSL) to encrypt the connection between your browser and the server.</p>
