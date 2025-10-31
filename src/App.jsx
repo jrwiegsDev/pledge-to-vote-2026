@@ -8,7 +8,7 @@ import SharePledge from './components/SharePledge';
 import LiveUserCount from './components/LiveUserCount';
 import Footer from './components/Footer';
 
-const API_URL = 'https://pledge-to-vote-2026-backend.onrender.com/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://pledge-to-vote-2026-backend.onrender.com/api';
 
 const determineCurrentGoal = (pledges) => {
   if (pledges < 500) return 500;
@@ -34,12 +34,24 @@ function App() {
           fetch(`${API_URL}/pledges/count`),
           fetch(`${API_URL}/pledges/by-state`),
         ]);
+        
+        // Check if responses are OK before parsing
+        if (!countResponse.ok || !stateResponse.ok) {
+          console.error("API Error:", countResponse.status, stateResponse.status);
+          setTotalPledges(0);
+          setStateData([]);
+          return;
+        }
+        
         const countData = await countResponse.json();
         const statePledges = await stateResponse.json();
-        setTotalPledges(countData.totalPledges);
-        setStateData(statePledges);
+        setTotalPledges(countData.totalPledges || 0);
+        setStateData(statePledges || []);
       } catch (error) {
         console.error("Failed to fetch initial data:", error);
+        // Set safe defaults to prevent crashes
+        setTotalPledges(0);
+        setStateData([]);
       }
     };
     fetchInitialData();
@@ -59,11 +71,13 @@ const handleSubmit = async (event) => {
       
       // 2. THE FIX: Immediately re-fetch the data for the map
       const stateResponse = await fetch(`${API_URL}/pledges/by-state`);
-      const statePledges = await stateResponse.json();
+      if (stateResponse.ok) {
+        const statePledges = await stateResponse.json();
+        setStateData(statePledges || []); // This line updates the map
+      }
       
-      // 3. Update BOTH state variables to trigger a full re-render
-      setTotalPledges(postData.totalPledges);
-      setStateData(statePledges); // This line updates the map
+      // 3. Update state variables to trigger a full re-render
+      setTotalPledges(postData.totalPledges || 0);
       
       setPledgeSuccess(true);
       setLastPledgedState(selectedState);

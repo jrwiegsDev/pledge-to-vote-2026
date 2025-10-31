@@ -8,7 +8,8 @@ const SharePledge = ({ pledgedState }) => {
   const shareText = "I've pledged to vote in the 2026 Midterms! Join me and make your voice heard. 🇺🇸";
 
   // NEW: We construct the dynamic URL for the shareable image
-  const dynamicImageUrl = `https://pledge-to-vote-2026-backend.onrender.com/api/share/image/${pledgedState}.png`;
+  const apiUrl = import.meta.env.VITE_API_URL || 'https://pledge-to-vote-2026-backend.onrender.com/api';
+  const dynamicImageUrl = `${apiUrl}/share/image/${pledgedState}.png`;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(siteUrl).then(() => {

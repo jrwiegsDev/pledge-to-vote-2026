@@ -7,7 +7,8 @@ const LiveUserCount = () => {
 
   useEffect(() => {
     // Connect to the WebSocket server
-    const socket = io('https://pledge-to-vote-2026-backend.onrender.com');
+    const socketUrl = import.meta.env.VITE_SOCKET_URL || 'https://pledge-to-vote-2026-backend.onrender.com';
+    const socket = io(socketUrl);
 
     // Listen for the 'userCountUpdate' event from the server
     socket.on('userCountUpdate', (count) => {
